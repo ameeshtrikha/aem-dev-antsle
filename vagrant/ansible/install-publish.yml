@@ -33,6 +33,6 @@
     aem_mode: 'publish'
     aem_sp_install: false
   roles:
-    #- { role: aem }
-    - { role: dispatcher }
+    - { role: aem }
+    #- { role: dispatcher }
 
