@@ -1,7 +1,7 @@
 all:
   hosts:
     aem-publish:
-      ansible_host: {{host_ip}}
+      ansible_host: $HOST_IP
       ansible_port: 22
       vars:
         sling_run_modes: "publish,local"
