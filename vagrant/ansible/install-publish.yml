@@ -19,18 +19,28 @@
       debug:
         msg: "{{ msg.split('\n') }}"
       tags: debug_info
+
+- hosts: localhost
+  connection: local
+  tasks:
+  - add_host:
+      name: "{{ host_ip }}"
+      groups: publish_group
+    changed_when: false
+
 - hosts: all
   tasks: []
   become: yes
   roles:
     - { role: base }
 
-- hosts: aem-publish
+- hosts: publish_group
   become: yes
   vars:
     aem_nosample: true
     aem_debug: true
     aem_mode: 'publish'
+    sling_run_modes: "publish,local"
     aem_sp_install: false
   roles:
     - { role: aem }
