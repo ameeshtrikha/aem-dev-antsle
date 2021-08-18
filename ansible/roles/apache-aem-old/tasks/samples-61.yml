@@ -1,0 +1,21 @@
+---
+# AEM Dispatcher Geometrixx virtualhosts installation - Tasks
+
+- name: Install virtual hosts on Apache for Geometrixx samples
+  template:
+    src: virtualhost-61.conf.j2
+    dest: /etc/httpd/virtualhosts/{{item.key}}.conf
+    mode: 0644
+  with_dict:
+    geometrixx:
+      servername: www.geometrixx.com
+      serveralias:
+        - www.geometrixx.fr
+        - www.geometrixx.es
+    geometrixx-outdoors:
+      servername: www.outdoors.com
+      serveralias:
+        - www.outdoors.fr
+  notify:
+    - httpd_restart
+    - clear_dispatcher_cache

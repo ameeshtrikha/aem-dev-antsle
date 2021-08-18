@@ -1,0 +1,17 @@
+---
+# Base installation - Default variables
+
+env_eth: eth0
+
+# ---- ntpd configuration ----
+ntp_enabled: false
+
+# NTP server area configuration (leave empty for 'Worldwide').
+# See: http://support.ntp.org/bin/view/Servers/NTPPoolServers
+#ntp_pool_zone: .ca
+
+#ntp_servers:
+#  - "0{{ntp_pool_zone}}.pool.ntp.org"
+#  - "1{{ntp_pool_zone}}.pool.ntp.org"
+#  - "2{{ntp_pool_zone}}.pool.ntp.org"
+#  - "3{{ntp_pool_zone}}.pool.ntp.org"

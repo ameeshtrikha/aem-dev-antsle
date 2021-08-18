@@ -1,0 +1,19 @@
+---
+# Playbook for installation of software components with default configuration
+
+- hosts: all
+  tasks: []
+  become: yes
+  roles:
+    - { role: base }
+
+- hosts: aem-author
+  become: yes
+  vars:
+    aem_nosample: false
+    aem_debug: true
+    aem_mode: "author"
+  roles:
+    - { role: java }
+    - { role: aem }
+    #- { role: nexus3-oss }

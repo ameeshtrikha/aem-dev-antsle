@@ -1,0 +1,13 @@
+# SSL configuration common to all virtual hosts
+#
+# WARNING - This file is maintained by Ansible and must not be edited manually ! 
+#
+
+SSLEngine on
+SSLProtocol         all -SSLv3 -TLSv1 -TLSv1.1
+SSLCipherSuite      HIGH:MEDIUM:!SSLv3:!kRSA
+SSLHonorCipherOrder on
+SSLCompression      off
+
+SSLCertificateFile    /etc/httpd/ssl/{{apache_ssl_keyfilename}}.crt
+SSLCertificateKeyFile /etc/httpd/ssl/{{apache_ssl_keyfilename}}.key

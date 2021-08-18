@@ -1,0 +1,10 @@
+all:
+  hosts:
+    aem-publish:
+      ansible_host: 192.168.2.102
+      ansible_port: 22
+      vars:
+        sling_run_modes: "publish,local"
+        aem_port: '4503'
+        aem_mode: 'publish'
+        aem_debug: false

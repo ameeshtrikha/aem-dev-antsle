@@ -1,0 +1,5 @@
+---
+- name: test role syntax
+  hosts: test
+  roles:
+    - wcm_io_devops.aem_dispatcher

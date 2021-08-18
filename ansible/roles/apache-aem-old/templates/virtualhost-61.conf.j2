@@ -1,0 +1,24 @@
+{% set vhost_name       = item.key %}
+{% set vhost_servername = item.value.servername %}
+{% set vhost_alias      = item.value.serveralias %}
+# {{vhost_name}} virtualhost
+
+<VirtualHost *:80>
+	ServerName {{vhost_servername}}
+{% for alias in vhost_alias %}
+	ServerAlias {{alias}}
+{% endfor %}
+
+	DocumentRoot {{dispatcher_docroot}}
+	CustomLog "|{{apache_bin_root}}/rotatelogs {{apache_logs_root}}/{{vhost_name}}-access_log.%Y%m%d 86400" combined
+  ErrorLog "|{{apache_bin_root}}/rotatelogs {{apache_logs_root}}/{{vhost_name}}-error_log.%Y%m%d 86400"
+
+	RewriteEngine on
+
+	Include virtualhosts/includes/inc_rewrites_global.conf
+
+	RewriteRule ^/$ /content/{{vhost_name}}/en.html [PT]
+
+	Include virtualhosts/includes/inc_dispatcher_mod.conf
+
+</VirtualHost>

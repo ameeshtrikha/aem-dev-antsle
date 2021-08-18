@@ -1,0 +1,14 @@
+$: << File.expand_path(File.join(__dir__, '..'))
+
+require 'vagrant_config'
+
+class VagrantBox
+  include VagrantConfig
+
+  def initialize
+#    process_resources
+    vagrant_setup 'publish'
+  end
+end
+
+VagrantBox.new

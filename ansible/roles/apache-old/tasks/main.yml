@@ -1,0 +1,156 @@
+---
+# Apache installation - Tasks
+#
+# Currently runs only on RedHat
+#
+
+#- name: Define OS specific variables
+#  include_vars: "{{ item }}"
+#  with_first_found:
+#    - "{{ ansible_os_family }}-{{ ansible_distribution_major_version}}.yml"
+#    - "{{ ansible_os_family }}.yml"
+#  tags: httpd
+
+- name: Create apache user
+  user:
+    name: "{{apache_user}}"
+    comment: "Apache httpd user"
+  tags: httpd
+
+# Install httpd by source compilation on RedHat
+
+- block:
+  - stat: "path=/usr/sbin/httpd"
+    register: httpd_binary
+
+  - name: Install packages needed for Apache source compilation
+    yum: name={{item}} state=latest
+    become_user: root
+    with_items:
+      - gcc
+      - make
+      - openssl
+      - openssl-devel
+      - wget
+      - pcre-devel
+      - expat-devel
+    when: httpd_binary.stat.exists == False
+
+  - name: Download apache source package, compile and install
+    script: "install_httpd24.sh -h={{apache_httpd_version}} -a={{apache_apr_version}} -u={{apache_apr_util_version}}"
+    become_user: root
+    when: httpd_binary.stat.exists == False
+  when: ansible_os_family == 'RedHat'
+  tags: httpd
+
+# Apache configuration
+
+- name: Create link on Apache modules folder
+  file:
+    src: /usr/sbin/httpd
+    dest: "{{apache_conf_root}}/modules"
+    state: link
+  tags: httpd
+
+- name: Create link on Apache logs folder
+  file:
+    src: /var/log/httpd
+    dest: "{{apache_conf_root}}/logs"
+    state: link
+  tags: httpd
+
+- name: Create conf.d configuration folder
+  file:
+    path: "{{apache_conf_root}}/conf.d"
+    state: directory
+    mode: 0755
+  tags: httpd
+
+- name: Create virtualhosts configuration folder
+  file:
+    path: "{{apache_conf_root}}/virtualhosts"
+    state: directory
+    mode: 0755
+  tags: httpd
+
+- name: Create virtualhosts includes folder
+  file:
+    path: "{{apache_conf_root}}/virtualhosts/includes"
+    state: directory
+    mode: 0755
+  tags: httpd
+
+- name: Install httpd.conf configuration file
+  template:
+    src: httpd.conf.j2
+    dest: "{{apache_conf_root}}/conf/httpd.conf"
+    mode: 0644
+  become_user: root
+  notify:
+    - httpd_restart
+  tags: httpd
+
+# SSL self signed certificate generation and installation
+
+- block:
+  - name: Create folder for SSL certificate
+    file:
+      path: "{{apache_conf_root}}/ssl"
+      state: directory
+      mode: 0755
+
+  - stat: "path={{apache_conf_root}}/ssl/{{apache_ssl_keyfilename}}.key"
+    register: apache_ssl_certificate
+
+  - name: Create self-signed SSL cert
+    command: openssl req -new -x509 -sha256 -nodes -days 3650 -newkey rsa:2048 -keyout "{{apache_conf_root}}/ssl/{{apache_ssl_keyfilename}}.key" -out "{{apache_conf_root}}/ssl/{{apache_ssl_keyfilename}}.crt" -subj "{{apache_ssl_subject}}"
+    when: apache_ssl_certificate.stat.exists == False
+
+  - name: Install httpd-ssl.conf configuration file
+    template:
+      src: ssl.conf.j2
+      dest: "{{apache_conf_root}}/conf/extra/httpd-ssl.conf"
+      mode: 0644
+    notify:
+      - httpd_restart
+  when: apache_ssl
+  tags: httpd
+
+# System boot configuration
+
+- block:
+  - name: Install Apache init.d script
+    template:
+      src: initd.j2
+      dest: /etc/init.d/httpd
+      mode: 0755
+    become_user: root
+    notify:
+      - httpd_restart
+
+  - name: Enable Apache to be started at boot
+    service:
+      name: httpd
+      enabled: yes
+      state: started
+
+  when: ansible_service_mgr == 'sysvinit' or ansible_service_mgr == 'upstart' or ansible_service_mgr == 'service'
+  tags: httpd
+
+- block:
+  - name: Install Apache system.d script
+    template:
+      src: httpd.service.j2
+      dest: "/etc/systemd/system/httpd.service"
+      owner: root
+      group: root
+      mode: 0744
+
+  - name: Enable Apache to be started at boot
+    systemd:
+      name: httpd
+      enabled: yes
+      state: started
+
+  when: ansible_service_mgr == 'systemd'
+  tags: httpd

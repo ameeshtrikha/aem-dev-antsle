@@ -1,0 +1,14 @@
+# Dispatcher module configuration common to all virtual hosts
+#
+# WARNING - This file is maintained by Ansible and must not be edited manually ! 
+#
+
+<Directory {{dispatcher_docroot}}>
+	<IfModule disp_apache2.c>
+		SetHandler dispatcher-handler
+		ModMimeUsePathInfo On
+	</IfModule>
+	Options FollowSymLinks
+	AllowOverride None
+	Require all granted
+</Directory>

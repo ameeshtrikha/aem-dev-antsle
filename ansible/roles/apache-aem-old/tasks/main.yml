@@ -1,0 +1,66 @@
+---
+# AEM Dispatcher installation - Tasks
+
+- name: Disable SELinux
+  selinux:
+    policy: targeted
+    state: permissive
+  when: ansible_os_family == 'RedHat' and ansible_distribution_major_version|int == 7
+  tags: dispatcher
+
+- name: Create dispatcher cache folder
+  file:
+    path: "{{dispatcher_docroot}}"
+    state: directory
+    owner: apache
+    group: apache
+    mode: 0755
+  tags: dispatcher
+
+- name: Install Dispatcher module
+  get_url:
+    url: "{{dispatcher_download}}"
+    dest: /etc/httpd/modules/mod_dispatcher.so
+    url_username: "{{binaries_src_usr}}"
+    url_password: "{{binaries_src_pwd}}"
+    force_basic_auth: yes
+    mode: 0755
+  notify:
+    - httpd_restart
+  tags: dispatcher
+
+- name: Install configuration files
+  template:
+    src: "{{item.filename}}.j2"
+    dest: "/etc/httpd/{{item.dest}}/{{item.filename}}"
+    mode: 0644
+  with_items:
+    - { filename: dispatcher.conf, dest: conf.d }
+    - { filename: dispatcher.any,  dest: conf.d }
+    - { filename: operations.conf, dest: virtualhosts }
+  notify:
+    - httpd_restart
+    - clear_dispatcher_cache
+  tags: dispatcher, dispatcherconf
+
+- name: Install virtual hosts configuration includes on Apache
+  template:
+    src: "{{item}}"
+    dest: "/etc/httpd/virtualhosts/includes/{{item | basename | regex_replace('\\.j2','')}}"
+    mode: 0644
+  with_fileglob:
+    - ../templates/includes/*.j2
+  notify:
+    - httpd_restart
+    - clear_dispatcher_cache
+  tags: dispatcher, dispatcherconf
+
+# Add sample websites virtualhosts if samples are installed in AEM
+
+- include_tasks: samples-61.yml
+  when: aem_nosample is defined and not aem_nosample and aem_version < '6.2'
+  tags: dispatcher, dispatcherconf
+
+- include_tasks: samples-62.yml
+  when: aem_nosample is defined and not aem_nosample and aem_version >= '6.2'
+  tags: dispatcher, dispatcherconf

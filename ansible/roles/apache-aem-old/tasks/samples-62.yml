@@ -1,0 +1,17 @@
+---
+# AEM Dispatcher We.Retail virtualhosts installation - Tasks
+
+- name: Install virtual hosts on Apache for We.Retail sample
+  template:
+    src: virtualhost-62.conf.j2
+    dest: /etc/httpd/virtualhosts/{{item.key}}.conf
+    mode: 0644
+  with_dict:
+    we-retail:
+      servername: www.weretail.com
+      serveralias:
+        - www.weretail.fr
+        - www.weretail.es
+  notify:
+    - httpd_restart
+    - clear_dispatcher_cache

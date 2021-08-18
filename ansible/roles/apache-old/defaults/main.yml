@@ -1,0 +1,19 @@
+---
+# Apache installation - Variables
+
+apache_httpd_version: 2.4.32
+apache_apr_version: 1.6.3
+apache_apr_util_version: 1.6.1
+
+apache_ports_http: 80
+apache_ports_https: 443
+apache_ssl: true
+apache_ssl_subject: 
+apache_ssl_keyfilename: localhost
+
+apache_user: apache
+apache_group: apache
+apache_conf_root: /etc/httpd
+apache_bin_root: /usr/sbin
+apache_doc_root: /var/www/html
+apache_logs_root: /var/log/httpd

@@ -1,0 +1,23 @@
+---
+# AEM Dispatcher installation - Variables
+
+aem_version: '6.5'
+
+dispatcher_version: '2.4-4.2.3'
+dispatcher_module: "dispatcher-apache{{dispatcher_version}}.so"
+dispatcher_download: "{{binaries_root_src}}/adobe/aem/dispatcher/{{dispatcher_module}}"
+
+# Root folder of the dispatcher cache
+dispatcher_docroot: "{{apache_doc_root}}/dispatcher"
+
+# error(0) / warn(1) / info(2) / debug(3) / trace(4)
+dispatcher_log_level: 1
+
+# Port used to flush the dispatcher (default: 80)
+dispatcher_flush_port: 8000
+
+# list of publishers
+dispatcher_publishers: localhost/4503
+
+# Sets the level upto which files named ".stat" will be created in the document root of the webserver.
+dispatcher_statfileslevel: 0

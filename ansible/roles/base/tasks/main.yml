@@ -1,0 +1,52 @@
+---
+# Base tasks
+
+- block:
+  - stat: "path=/etc/yum.repos.d/epel.repo"
+    register: epel_repo
+
+  - name: Install EPEL repository
+    yum: name=epel-release state=latest
+    become_user: root
+    when: epel_repo.stat.exists == False
+
+  - name: Install dependencies
+    yum:
+      name: ['unzip', 'htop', 'ntp', 'libselinux-python', 'yum', 'sudo', 'tar', 'nano']
+      state: latest
+    become_user: root
+  when: ansible_os_family == 'RedHat'
+
+# - name: Configuring /etc/hosts
+#   lineinfile:
+#     dest: /etc/hosts
+#     regexp: '.*{{ item }}$'
+#     line: "{{ hostvars[item]['ansible_%s' | format(env_eth)].ipv4.address }} {{ item }}"
+#     state: present
+#     insertafter: EOF
+#   when: hostvars[item]['ansible_%s' | format(env_eth)].ipv4.address is defined 
+#   with_items: "{{ groups['all'] }}"
+
+#- name: Configure NTP
+#  template:
+#    src: ntp.conf.j2
+#    dest: /etc/ntp.conf
+#    mode: 0644
+#  notify:
+#    - ntpd_restart
+
+#- name: Enable ntpd to be started at boot if enabled
+#  service:
+#    name: ntpd
+#    enabled: yes
+#    state: started
+#  when: ntp_enabled
+#  notify:
+#    - ntpd_restart
+
+#- name: Disable ntpd to be started at boot if disabled
+#  service:
+#    name: ntpd
+#    enabled: no
+#    state: stopped
+#  when: not ntp_enabled

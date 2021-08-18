@@ -1,0 +1,8 @@
+# Default ignored files
+.idea
+vagrant/shared/**
+
+.vagrant
+
+*.log
+

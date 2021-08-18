@@ -1,0 +1,37 @@
+---
+- name: Get installed version of Apache.
+  shell: "apachectl -v"
+  register: _apache_version
+  changed_when: false
+  tags:
+    - skip_ansible_lint
+
+- name: Create apache_version variable.
+  set_fact:
+    apache_version: "{{ _apache_version.stdout.split()[2].split('/')[1] }}"
+
+- name: Build Dispatcher filename tokens from environment.
+  set_fact:
+    aem_dispatcher_tarball_tokens:
+      - "dispatcher"
+      - "{{ aem_dispatcher_version }}"
+      - "apache{{ apache_version | regex_replace('(\\d+\\.\\d+).*', '\\1') }}"
+      - "{{ ansible_system | lower }}"
+      - "{{ ansible_architecture if aem_dispatcher_version is version('4.3.3', '>=')
+        else ansible_architecture | regex_replace('_', '-') }}"
+
+- name: Create SSL token name from used libssl version.
+  set_fact:
+    aem_dispatcher_ssl_token: "{{ 'ssl' + aem_dispatcher_libssl_version | regex_replace('(\\d+\\.\\d+).*', '\\1')
+      if aem_dispatcher_version is version('4.3.3', '>=')
+      else 'ssl' }}"
+  when: aem_dispatcher_ssl_support
+
+- name: Add SSL token to filename tokens.
+  set_fact:
+    aem_dispatcher_tarball_tokens: "{{ aem_dispatcher_tarball_tokens + [aem_dispatcher_ssl_token] }}"
+  when: aem_dispatcher_ssl_support
+
+- name: Build dispatcher tarball name.
+  set_fact:
+    aem_dispatcher_tarball_name: "{{ aem_dispatcher_tarball_tokens | join('-') }}.tar.gz"

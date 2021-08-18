@@ -1,0 +1,32 @@
+---
+# Oracle Java JDK installation - Tasks
+
+- name: Create java base folder
+  file:
+    path: /opt/java
+    state: directory
+  tags: java
+
+- name: Unpack Java archive
+  unarchive:
+    src: "{{java_download}}"
+    dest: /opt/java
+    remote_src: yes
+    owner: root
+    group: root
+    creates: "{{java_folder}}/bin/java"
+  tags: java
+
+- name: Create JDK folder link
+  file:
+    src: "{{java_folder}}"
+    dest: "{{java_link_folder}}"
+    state: link
+  tags: java
+
+- name: Make Java available for system
+  alternatives:
+    name: java
+    link: /usr/bin/java
+    path: "{{java_link_folder}}/bin/java"
+  tags: java

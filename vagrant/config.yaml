@@ -1,0 +1,35 @@
+vms:
+  vbox:
+    instance_name: aem-author-vm
+    aem_mode: 'author'
+    aem_port: 4502
+    dispatcher:
+      install: false
+      landing_page: /content/we-retail/us/en.html
+    memory_size: 3072
+    cpus: 2
+    box_os: ubuntu
+    box_name: ubuntu/xenial64
+    box_version: 20210329.1.0
+    gui: false
+    min_heap: 512
+    max_heap: 2048
+    shared_folders:
+      vm-software:
+        host_path: ../shared
+        vm_path: /shared
+    port_forwards:
+      ssh:
+        host_port: 2243
+        guest_port: 22
+      http:
+        host_port: 8082
+        guest_port: 80
+      http_cq_deploy:
+        host_port: 4502
+        guest_port: 4502
+      http_cq_debug:
+        host_port: 30302
+        guest_port: 30302
+    ip: 192.168.2.199
+    host_name: aem.author.local.net

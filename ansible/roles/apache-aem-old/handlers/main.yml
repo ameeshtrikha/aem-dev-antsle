@@ -1,0 +1,8 @@
+---
+# Geometrixx configuration - Handlers
+
+- name: clear_dispatcher_cache
+  shell: "rm -rf {{dispatcher_docroot}}/*"
+
+- name: httpd_restart
+  service: name=httpd state=restarted

@@ -1,0 +1,19 @@
+---
+vms:
+  vbox:
+    instance_name: aem-author
+    port_forwards:
+      ssh:
+        host_port: 2243
+        guest_port: 22
+      http:
+        host_port: 8082
+        guest_port: 80
+      http_cq_deploy:
+        host_port: 4502
+        guest_port: 4502
+      http_cq_debug:
+        host_port: 34502
+        guest_port: 34502
+    ip: 192.168.33.101
+    host_name: aem65.author.local.net

@@ -1,0 +1,38 @@
+---
+# Playbook for installation of software components with default configuration
+
+- name: dump all
+  hosts: all
+
+  tasks:
+    - name: Print some debug information
+      vars:
+        msg: |
+          Module Variables ("vars"):
+          --------------------------------
+          {{ vars | to_nice_json }}
+
+          HOST Variables ("hostvars"):
+          --------------------------------
+          {{ hostvars | to_nice_json }}
+
+      debug:
+        msg: "{{ msg.split('\n') }}"
+      tags: debug_info
+- hosts: all
+  tasks: []
+  become: yes
+  roles:
+    - { role: base }
+
+- hosts: aem-publish
+  become: yes
+  vars:
+    aem_nosample: true
+    aem_debug: true
+    aem_mode: 'publish'
+    aem_sp_install: false
+  roles:
+    #- { role: aem }
+    - { role: dispatcher }
+

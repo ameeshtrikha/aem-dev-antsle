@@ -1,0 +1,16 @@
+[Unit]
+Description=Jetty service for DealerLocator
+After=multi-user.target
+Requires=network.target
+
+[Service]
+Type=forking
+ExecStart=/opt/jetty/bin/jetty.sh start
+ExecStop=/opt/jetty/bin/jetty.sh stop
+PIDFile=/var/run/jetty/jetty.pid
+RemainAfterExit=yes
+User=root
+KillMode=none
+
+[Install]
+WantedBy=multi-user.target

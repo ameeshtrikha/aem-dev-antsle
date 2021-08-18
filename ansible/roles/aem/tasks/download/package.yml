@@ -1,0 +1,17 @@
+- name: Install AEM package.
+  package:
+    name: "{{ aem_cms_package }}"
+    state: present
+
+- name: Copy AEM quickstart to download folder.
+  copy:
+    src: "{{ aem_cms_package_home }}/{{ aem_cms_quickstart_name }}"
+    dest: "{{ aem_cms_download_path }}"
+    remote_src: True
+    owner: "{{ aem_cms_user }}"
+    group: "{{ aem_cms_group }}"
+
+- name: Remove AEM package.
+  package:
+    name: "{{ aem_cms_package }}"
+    state: absent

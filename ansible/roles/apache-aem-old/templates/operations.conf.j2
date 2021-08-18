@@ -1,0 +1,28 @@
+#
+# Operations virtualhost
+#
+# This virtualhost is dedicated to technical operations (flush...).
+#
+# WARNING - This file is maintained by Ansible and must not be edited manually ! 
+#
+{% if dispatcher_flush_port != '80' %}
+Listen {{dispatcher_flush_port}}
+{% endif %}
+
+<VirtualHost *:{{dispatcher_flush_port}}>
+	ServerName {{inventory_hostname}}
+
+	<Location "/dispatcher">
+		Require all denied
+		Require local
+	{% for h in groups['aem-publish'] %}
+		Require ip {{ hostvars[h]['ansible_eth0'].ipv4.address }}
+	{% endfor %}
+	</Location>
+
+	DocumentRoot {{dispatcher_docroot}}
+	CustomLog "|{{apache_bin_root}}/rotatelogs {{apache_logs_root}}/operations-access_log.%Y%m%d 86400" combined
+  ErrorLog "|{{apache_bin_root}}/rotatelogs {{apache_logs_root}}/operations-error_log.%Y%m%d 86400"
+
+	Include virtualhosts/includes/inc_dispatcher_mod.conf
+</VirtualHost>

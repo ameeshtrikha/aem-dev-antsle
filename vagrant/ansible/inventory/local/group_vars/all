@@ -1,0 +1,37 @@
+ansible_user: root
+ansible_password: antsle
+aem_heapsize: 2048
+java_version: '8'
+java_revision: '221'
+java_download: "http://192.168.2.60:8081/repository/artifacts/java/jdk-8u221-linux-x64.tar.gz"
+aem_download: "http://192.168.2.60:8081/repository/artifacts/aem/AEM_6.5_Quickstart.jar"
+aem_license_download: "http://192.168.2.60:8081/repository/artifacts/aem/license.properties"
+packages:
+  - "http://192.168.2.60:8081/repository/artifacts/aem/AEM-6.5.8.0-6.5.8.zip"
+  - "http://192.168.2.60:8081/repository/artifacts/aem/packages/acs-aem-commons-content-4.7.0.zip"
+  - "http://192.168.2.60:8081/repository/artifacts/aem/packages/core.wcm.components.all-2.9.0.zip"
+  - "http://192.168.2.60:8081/repository/artifacts/aem/packages/com.adobe.acs.bundles.twitter4j-content-1.0.0.zip"
+aem_version: '6.5'
+aem_sp_number: '8'
+binaries_src_usr: "{{nexus_user}}"
+binaries_src_pwd: "{{nexus_password}}"
+binaries_root_src: "file:///shared"
+binaries_auth_java_src: "file:///shared"
+binaries_auth_root_src: "file:///shared"
+# Environment ID
+env: local
+# Ethernet interface to use for inter servers communications
+env_eth: eth1
+
+# ---- AEM configuration ----------------------------------
+
+aem_nosample: false
+aem_allmodes: "{{aem_mode}},local"
+dispatcher_log_level: 3
+
+
+# ----- New AEM task configurations -----------------------
+aem_cms_install_source: 'url'
+aem_cms_url: "http://192.168.2.60:8081/repository/artifacts/aem/AEM_6.5_Quickstart.jar"
+aem_cms_license_url: "http://192.168.2.60:8081/repository/artifacts/aem/license.properties"
+

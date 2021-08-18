@@ -1,0 +1,21 @@
+---
+vms:
+  vbox:
+    instance_name: aem-publish
+    aem_mode: 'publish'
+    aem_port: 4503
+    port_forwards:
+      ssh:
+        host_port: 2244
+        guest_port: 22
+      http:
+        host_port: 8080
+        guest_port: 80
+      http_cq_deploy:
+        host_port: 4503
+        guest_port: 4503
+      http_cq_debug:
+        host_port: 34503
+        guest_port: 34503
+    ip: 192.168.33.102
+    host_name: aem65.publish.local.net

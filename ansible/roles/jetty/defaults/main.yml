@@ -1,0 +1,12 @@
+---
+
+jetty_version: "9.4.19.v20190610"
+jetty_file: "jetty-distribution-{{jetty_version}}.tar.gz"
+jetty_repo_site: "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/{{jetty_version}}"
+
+
+# Variables for jetty process
+
+jetty_deploy_monitoredPath: "/var/www/webapps"
+jetty_deploy_scanInterval: "1"
+jetty_deploy_extractWars: true

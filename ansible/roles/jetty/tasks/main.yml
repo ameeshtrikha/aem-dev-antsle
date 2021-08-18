@@ -1,0 +1,57 @@
+---
+- name: Check jetty already install
+  stat:
+    path: "/opt/jetty"
+  register: jetty_dir_path
+
+- name: Download jetty software
+  get_url:
+    url: "{{jetty_repo_site}}/{{jetty_file}}"
+    dest: "/tmp"
+  when: jetty_dir_path.stat.exists == False
+
+- name: Install jetty
+  unarchive:
+    src: "/tmp/{{jetty_file}}"
+    dest: "/opt"
+    owner: root
+    group: root
+    remote_src: yes
+  when: jetty_dir_path.stat.exists == False
+
+- name: Create link for default install
+  file:
+    src: "/opt/jetty-distribution-{{jetty_version}}"
+    dest: "/opt/jetty"
+    state: link
+
+- name: Make directory for hot deployment
+  file:
+    path: "{{jetty_deploy_monitoredPath}}"
+    state: directory
+    recurse: yes
+
+- name: Make link for initial start
+  file:
+    src: "/opt/jetty/bin/jetty.sh"
+    dest: "/etc/init.d/jetty"
+    state: link   
+
+- name: Install config file
+  template:
+    src: "start.ini.j2"
+    dest: "/opt/jetty/start.ini"
+
+- name: Install systemd service for jetty
+  template: 
+    src: jetty.service.j2
+    dest: /usr/lib/systemd/system/jetty.service
+    mode: u=rwx,g=rwx,o=rwx 
+
+- name: Start the systemd jetty port 8080
+  systemd: name="jetty.service" state=restarted enabled=yes daemon_reload=yes no_block=yes
+  async: 0
+
+
+
+

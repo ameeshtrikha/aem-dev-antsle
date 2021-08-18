@@ -1,0 +1,10 @@
+all:
+  hosts:
+    aem-author:
+      ansible_host: 192.168.2.101
+      ansible_port: 22
+      vars:
+        sling_run_modes: "author,local"
+        aem_port: 4502
+        aem_mode: 'author'
+        aem_debug: true

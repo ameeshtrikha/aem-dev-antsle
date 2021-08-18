@@ -1,0 +1,23 @@
+---
+
+- name: Create crx-quickstart/install folder.
+  file:
+    path: "{{ aem_cms_home }}/crx-quickstart/install"
+    state: directory
+    owner: "{{ aem_cms_user }}"
+    group: "{{ aem_cms_group }}"
+
+#- name: Copy OSGi configuration and hotfixes.
+#  copy:
+#    src: "{{ item }}"
+#    dest: "{{ aem_cms_home }}/crx-quickstart/install"
+#    owner: "{{ aem_cms_user }}"
+#    group: "{{ aem_cms_group }}"
+#  with_fileglob: "{{ aem_cms_quickstart_install_fileglob }}"
+
+- name: AEM - Copy packages to install
+  get_url:
+    url: '{{ item }}'
+    dest: '{{ aem_cms_home }}/crx-quickstart/install'
+    force_basic_auth: 'no'
+    mode: 0775

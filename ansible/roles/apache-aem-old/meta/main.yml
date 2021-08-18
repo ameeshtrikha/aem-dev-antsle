@@ -1,0 +1,5 @@
+---
+# Apache / AEM Dispatcher installation - Dependencies
+
+dependencies:
+  - { role: apache }

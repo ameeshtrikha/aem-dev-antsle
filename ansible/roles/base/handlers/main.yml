@@ -1,0 +1,6 @@
+---
+# Base installation - Handlers
+
+- name: ntpd_restart
+  service: name=ntpd state=restarted
+  when: ntp_enabled

@@ -1,0 +1,5 @@
+---
+# Variables for group of AEM Publish instances
+
+aem_mode: publish
+aem_port: 4503

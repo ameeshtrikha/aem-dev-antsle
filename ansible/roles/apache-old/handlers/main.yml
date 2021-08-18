@@ -1,0 +1,5 @@
+---
+# Apache installation - Handlers
+
+- name: httpd_restart
+  service: name=httpd state=restarted

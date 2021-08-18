@@ -1,0 +1,9 @@
+---
+# Oracle Java JDK installation - Variables
+
+java_version: '8'
+java_revision: '221'
+java_archive: "jdk-{{java_version}}u{{java_revision}}-linux-x64.tar.gz"
+java_folder: "/opt/java/jdk1.{{java_version}}.0_{{java_revision}}"
+java_link_folder: "/opt/java/jdk1.{{java_version}}"
+java_download: "{{binaries_auth_java_src}}/{{java_archive}}"
